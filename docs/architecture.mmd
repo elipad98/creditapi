@@ -1,0 +1,120 @@
+```mermaid
+flowchart TB
+    subgraph FRONTEND["Frontend"]
+        Streamlit["Streamlit UI"]
+    end
+
+    subgraph BACKEND["FastAPI Backend"]
+        API["API Routes"]
+        SVC["Application Service"]
+    end
+
+    subgraph CORE["Core Services"]
+        OCR["OCR Service"]
+        AI["AI Service"]
+        RULES["Rules Engine"]
+    end
+
+    subgraph DATABASE["Database"]
+        PG[(PostgreSQL)]
+    end
+
+    subgraph EXTERNAL["External Services"]
+        OLLAMA["Ollama<br/>llama3.1:8b"]
+        TESSERACT["Tesseract OCR"]
+    end
+
+    Streamlit -->|HTTP| API
+    API --> SVC
+    SVC --> OCR
+    SVC --> AI
+    SVC --> RULES
+    SVC --> PG
+    OCR --> TESSERACT
+    AI --> OLLAMA
+```
+
+```mermaid
+flowchart LR
+    subgraph USERS["Usuarios"]
+        U["Cliente"]
+    end
+
+    subgraph CLIENT["Cliente"]
+        S["Streamlit"]
+    end
+
+    subgraph API["FastAPI"]
+        R["Routes"]
+        V["Validation"]
+    end
+
+    subgraph SERVICE["Services"]
+        AS["Application Service"]
+    end
+
+    subgraph CORE["Core"]
+        OCR["OCR Service"]
+        AI["AI Service"]
+        RE["Rules Engine"]
+    end
+
+    subgraph DATA["Data Layer"]
+        DB[(PostgreSQL)]
+    end
+
+    subgraph EXTERNAL["External"]
+        O["Ollama"]
+        T["Tesseract"]
+    end
+
+    U --> S
+    S --> R
+    R --> V
+    V --> AS
+    AS --> OCR
+    AS --> AI
+    AS --> RE
+    AS --> DB
+    OCR --> T
+    AI --> O
+```
+
+```mermaid
+sequenceDiagram
+    participant U as Usuario
+    participant ST as Streamlit
+    participant API as FastAPI
+    participant SVC as App Service
+    participant OCR as OCR Service
+    participant AI as AI Service
+    participant RE as Rules Engine
+    participant DB as PostgreSQL
+    participant OL as Ollama
+
+    U->>ST: Llena formulario
+    ST->>API: POST /applications
+    API->>SVC: create_application()
+    SVC->>DB: Guardar solicitud
+    DB-->>SVC: App ID
+    SVC-->>ST: Respuesta
+
+    U->>ST: Sube documento
+    ST->>API: POST /applications/{id}/documents
+    API->>SVC: upload_document()
+    SVC->>OCR: extract_text()
+    OCR->>OCR: pymupdf
+    OCR->>OCR: Tesseract
+    OCR-->>SVC: texto extraído
+    
+    SVC->>AI: extract_document_info()
+    AI->>OL: Ollama LLM
+    OL-->>AI: JSON con datos
+    AI-->>SVC: datos extraídos
+    
+    SVC->>RE: evaluate_application()
+    RE-->>SVC: aprobado/rechazado
+    SVC->>DB: Actualizar estado
+    DB-->>SVC: OK
+    SVC-->>ST: Resultado final
+```

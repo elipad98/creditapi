@@ -12,14 +12,6 @@ Sistema de aprobación crediticia con **OCR local + Ollama (LLM local)**.
 - **Docker** + Docker Compose
 
 ## Inicio local 
-
-```bash
-# Requisitos del sistema (Mac)
-brew install tesseract tesseract-lang postgresql
-
-# Requisitos del sistema (Ubuntu/Debian)
-sudo apt install tesseract-ocr tesseract-ocr-spa postgresql
-
 # Ollama (Linux/Mac/Windows)
 # https://ollama.com/download
 
